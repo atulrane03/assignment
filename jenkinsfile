@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo "starting Build Phase..."
+                echo "starting Build stage..."
                 echo "This phase compiles and packages the source code"
                 echo "Utilized Tools: CMAKE, Gradle, Apache Maven"
                 echo "Build stage completed successfully!"

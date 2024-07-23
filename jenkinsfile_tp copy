@@ -1,0 +1,77 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo "starting Build stagetp_1..."
+                echo "This phase compiles and packages the source code"
+                echo "Utilized Tools: CMAKE, Gradle, Apache Maven"
+                echo "Build stage completed successfully!"
+            }
+        }
+        stage('Unit and Integration Testing') {
+            steps {
+                echo 'Executing unit and integration tests to validate code functionality'
+                echo 'Tools used: Selenium, Appium'
+            }
+            post {
+                success {
+                    emailext attachLog: true,
+                    to: "$EMAIL_ID",
+                    subject: "Unit and Integration Tests: Passed!",
+                    body: "Results of the tests are attached for your review"
+                }
+                failure {
+                    emailext attachLog: true,
+                    to: "$EMAIL_ID",
+                    subject: "Unit and Integration Tests: Failed!",
+                    body: "Log of the failed tests is attached for analysis"
+                }
+            }
+        }
+        stage('Code Evaluation') {
+            steps {
+                echo 'Performing code analysis to ensure adherence to industry standards'
+                echo 'Tools used: SonarQube, Coverity'
+            }
+        }
+        stage('Security Assessment') {
+            steps {
+                echo 'Conducting security scan to identify potential vulnerabilities'
+                echo 'Tools used: Nessus, OpenVAS'
+            }
+            post {
+                success {
+                    emailext attachLog: true,
+                    to: "$SECURITY_SCAN_EMAIL_ID",
+                    subject: "Security Scan: Passed!",
+                    body: "Results of the security scan are attached for review"
+                }
+                failure {
+                    emailext attachLog: true,
+                    to: "$SECURITY_SCAN_EMAIL_ID",
+                    subject: "Security Scan: Failed!",
+                    body: "Log of the security scan is attached for investigation"
+                }
+            }
+        }
+        stage('Deploy to Staging Environment') {
+            steps {
+                echo 'Awaiting approval for deployment'
+                sleep 10
+                echo 'Deployment Approved'
+                echo "Application successfully deployed to staging AWS EC2 server: $STAGING_ENV"
+            }
+        }
+        stage('Integration Testing on Staging') {
+            steps {
+                echo "Conducting integration tests on staging environment for functionality validation"
+            }
+        }
+        stage('Deploy to Production Environment') {
+            steps {
+                echo "Deploying application to production AWS EC2 environment: $PRODUCTION_ENV"
+            }
+        }
+    }
+}
